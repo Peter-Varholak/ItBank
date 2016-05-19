@@ -1,4 +1,4 @@
-<form id="login" (submit)="login()">
+<form id="login">
     <label>
         Username:<br>
         <input id="username" name="username"/>
@@ -9,6 +9,6 @@
         <input id="password" name="password">
     </label>
     <br><br>
-    <input type="submit" value="Login">
+    <button (click)="login()">Login</button>
 </form>
 <div id="errorMessage"></div>
