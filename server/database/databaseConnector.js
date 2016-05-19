@@ -9,14 +9,13 @@ var connection = mysql.createConnection({
     database: 'itbank'
 });
 
-module.exports.querySelect = function(query){
-    connection.connect();
+module.exports.query = function(query, callback){
     connection.query(query, function(err, rows, fields){
         if(!err) {
-            return rows;
+            callback(rows);
         } else {
             console.log("Error performing query");
+            callback(null);
         }
     });
-    connection.end();
 };
