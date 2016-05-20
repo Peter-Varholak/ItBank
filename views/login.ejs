@@ -3,24 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <title><%= title %></title>
-    <link rel="stylesheet" type="text/css" href="/public/stylesheets/login.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/main.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/login.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-    <script src="/public/javascripts/login.js"></script>
+    <script src="/javascripts/login.js"></script>
 </head>
 <body>
-    <form id="login" method="post" action="/">
-        <label>
-            Username:<br>
-            <input id="username" name="username"/>
-        </label>
+    <nav>
+        <h2><%= title %></h2>
+    </nav>
+    <main>
+        <form id="login">
+            <label>
+                Username:<br>
+                <input id="username" name="username"/>
+            </label>
+            <br>
+            <label>
+                Password:<br>
+                <input id="password" name="password">
+            </label>
+            <br><br>
+            <button id="loginBtn">Login</button>
+        </form>
         <br>
-        <label>
-            Password:<br>
-            <input id="password" name="password">
-        </label>
-        <br><br>
-        <input type="submit" value="Login"/>
-    </form>
-    <div id="errorMessage"></div>
+        <p id="errorMessage"></p>
+    </main>
 </body>
 </html>

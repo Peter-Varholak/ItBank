@@ -14,16 +14,21 @@ router.post('/', function(req, res){
   var pass = req.body.password;
 
   db.login(username, pass, function(result){
+    var response = {};
     if(typeof result == 'object') {
-      res.render('main', { title: config.getTitle(), fullName: result.getFullName() });
+      res.render('main', { fullName: result.getFullName() }, function (err, html) {
+        response = {
+          type : "loginSuccess",
+          html  : html
+        };
+      });
     } else {
-      var response = {
+      response = {
         type : "loginError",
         errorCode  : result
       };
-
-      res.end(JSON.stringify(response));
     }
+    res.end(JSON.stringify(response));
   });
 });
 

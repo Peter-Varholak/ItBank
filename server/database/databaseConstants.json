@@ -1,0 +1,104 @@
+{
+  "tableNames": {
+    "ACCOUNTS": "accounts",
+    "BANK_TRANSACTIONS": "banktransactions",
+    "CARDS": "cards",
+    "CLIENT_DETAIL": "clientdetail",
+    "CLIENT_LOGIN": "clientlogin",
+    "CLIENTS": "clients",
+    "CLIENT_TRANSACTIONS": "clienttransactions",
+    "EMPLOYEE_LOGIN": "employeelogin",
+    "EMPLOYEES": "employees",
+    "HISTORY_LOGIN": "historylogin",
+    "LOANS": "loans",
+    "POSITIONS": "positions"
+  },
+  "viewNames": {
+    "CLIENT_DATA": "clientdata"
+  },
+  "tableColumns": {
+    "accounts": {
+      "ACCOUNT_ID": "accountid",
+      "CLIENT_ID": "clientid",
+      "BALANCE": "balance"
+    },
+    "bankTransactions": {
+      "TRANSACTION_ID": "transactionid",
+      "EMPLOYEE_ID": "employeeid",
+      "ACCOUNT_ID": "accountid",
+      "TRANSACTION_DATE": "transdate",
+      "VALUE": "value"
+    },
+    "cards": {
+      "CARD_ID": "cardid",
+      "ACCOUNT_ID": "accountid",
+      "ACTIVE": "active"
+    },
+    "clientDetail": {
+      "CLIENT_ID": "clientid",
+      "EMAIL": "email",
+      "PHONE": "phone"
+    },
+    "clientLogin": {
+      "CLIENT_ID": "clientid",
+      "USERNAME": "username",
+      "PASSWORD": "password",
+      "ACTIVE": "active"
+    },
+    "clients": {
+      "CLIENT_ID": "clientid",
+      "FIRST_NAME": "firstname",
+      "LAST_NAME": "lastname",
+      "DOB": "dateofbirth",
+      "ARCHIVED": "archived"
+    },
+    "clientTransactions": {
+      "TRANSACTION_ID": "transactionid",
+      "CLIENT_ID": "clientid",
+      "ACCOUNT_ID": "accountid",
+      "TRANSACTION_DATE": "transdate",
+      "VALUE": "value"
+    },
+    "employeeLogin": {
+      "EMPLOYEE_ID": "employeeid",
+      "USERNAME": "username",
+      "PASSWORD": "password",
+      "ACTIVE": "active"
+    },
+    "employees": {
+      "EMPLOYEE_ID": "employeeid",
+      "FIRST_NAME": "firstname",
+      "LAST_NAME": "lastname",
+      "POSITION_ID": "positionid"
+    },
+    "historyLogin": {
+      "USERNAME": "username",
+      "LOGIN_DATE": "logindate",
+      "VALID_LOGIN": "validlogin"
+    },
+    "loans": {
+      "LOAN_ID": "loandid",
+      "CLIENT_ID": "clientid",
+      "AMOUNT": "amount",
+      "PAID_AMOUNT": "paidamount",
+      "INTEREST": "interest"
+    },
+    "positions": {
+      "POSITION_ID": "positionid",
+      "POSITION_NAME": "positionname"
+    }
+  },
+  "viewColumns": {
+    "clientData": {
+      "CLIENT_ID": "clientid",
+      "FIRST_NAME": "firstname",
+      "LAST_NAME": "lastname",
+      "DOB": "dateofbirth",
+      "ARCHIVED": "archived",
+      "EMAIL": "email",
+      "PHONE": "phone",
+      "USERNAME": "username",
+      "ACTIVE": "active"
+    }
+  }
+}
