@@ -1,0 +1,20 @@
+{
+  "loginErrors": {
+    "INVALID_USERNAME": {
+      "errorCode": 1,
+      "errorMsg": "Invalid username or password"
+    },
+    "WRONG_PASSWORD": {
+      "errorCode": 2,
+      "errorMsg": "Invalid username or password"
+    },
+    "BLOCKED_USERNAME": {
+      "errorCode": 3,
+      "errorMsg": "Your account has been blocked"
+    },
+    "ARCHIVED_CLIENT": {
+      "errorCode": 4,
+      "errorMsg": "This account is no longer active"
+    }
+  }
+}

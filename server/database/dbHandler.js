@@ -4,43 +4,55 @@
 var mysql = require('mysql');
 var dbConnect = require("./databaseConnector");
 var dbConst = require('./databaseConstants');
+var errors = require('../errorCodes.json');
 var clientData = require("./data_objects/clientData");
 
 module.exports.login = function (username, password, callback) {
     var _username = mysql.escape(username);
-    var query = "SELECT * FROM " + dbConst.tableNames.CLIENT_LOGIN + 
+    var query = "SELECT " + dbConst.tableColumns.clientLogin.USERNAME + ", " +
+                dbConst.tableColumns.clientLogin.PASSWORD + ", " +
+                dbConst.tableColumns.clientLogin.ACTIVE + ", " +
+                dbConst.tableColumns.clients.ARCHIVED +
+                " FROM " + dbConst.tableNames.CLIENT_LOGIN +
+                " INNER JOIN " + dbConst.tableNames.CLIENTS + " ON " +
+                dbConst.tableNames.CLIENT_LOGIN + "." + dbConst.tableColumns.clientLogin.CLIENT_ID + "=" +
+                dbConst.tableNames.CLIENTS + "." + dbConst.tableColumns.clients.CLIENT_ID +
                 " WHERE " + dbConst.tableColumns.clientLogin.USERNAME + "=" + _username;
     dbConnect.query(query, function(result){
         if(result.length < 1) {
-            callback(1); // username doesn't exist
+            callback(errors.loginErrors.INVALID_USERNAME.errorCode); // username doesn't exist
         } else {
             var client = result[0];
-
-            if(client.active < 3) {
-                if(client.password === password) {
-                    updateLoginRecord(_username, true);
-                    query = "SELECT * FROM " + dbConst.viewNames.CLIENT_DATA +
+            console.log(client.archived);
+            if(client.archived != 1) {
+                if(client.active < 3) {
+                    if(client.password === password) {
+                        updateLoginRecord(_username, true);
+                        query = "SELECT * FROM " + dbConst.viewNames.CLIENT_DATA +
                             " WHERE " + dbConst.viewColumns.clientData.USERNAME + "=" + _username;
-                    dbConnect.query(query, function(result) {
-                        var data = result[0];
-                        var clientDataObject = clientData(data.clientID,
-                            data.firstName,
-                            data.lastName,
-                            data.dateOfBirth,
-                            data.archived,
-                            data.email,
-                            data.phone,
-                            data.username,
-                            data.active);
-                        callback(clientDataObject);
-                    });
+                        dbConnect.query(query, function(result) {
+                            var data = result[0];
+                            var clientDataObject = clientData(data.clientID,
+                                data.firstName,
+                                data.lastName,
+                                data.dateOfBirth,
+                                data.archived,
+                                data.email,
+                                data.phone,
+                                data.username,
+                                data.active);
+                            callback(clientDataObject);
+                        });
+                    } else {
+                        updateLoginRecord(_username, false);
+                        callback(errors.loginErrors.WRONG_PASSWORD.errorCode); // bad password
+                    }
                 } else {
-                    updateLoginRecord(_username, false);
-                    callback(1); // bad password
+                    callback(errors.loginErrors.BLOCKED_USERNAME.errorCode); // username blocked
                 }
             } else {
-                callback(2); // username blocked
-            }
+                callback(errors.loginErrors.ARCHIVED_CLIENT.errorCode); // client archived
+            }            
         }
     });
 };

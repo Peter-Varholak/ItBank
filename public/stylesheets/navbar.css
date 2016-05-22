@@ -1,0 +1,39 @@
+nav {
+    position: fixed;
+    top: 0;
+    width: 70%;
+    background-color: white;
+}
+nav h2{
+    margin-left: 5%;
+    color: silver;
+}
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background-color: whitesmoke;
+}
+nav li {
+    float: left;
+    width: 175px;
+}
+nav li a {
+    display: block;
+    color: black;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+nav li a:hover {
+    background-color: #e6e6e6;
+}
+nav li a.selectedTab {
+    background-color: lightskyblue;
+}
+#logout {
+    float: right;
+}
+#logout a:hover {
+    background-color: #ff3333;
+}
