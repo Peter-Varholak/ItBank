@@ -3,10 +3,12 @@ nav {
     top: 0;
     width: 70%;
     background-color: white;
+    border: 1px solid silver;
 }
 nav h2{
     margin-left: 5%;
     color: silver;
+    cursor: default;
 }
 nav ul {
     list-style-type: none;
@@ -24,16 +26,18 @@ nav li a {
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
+    cursor: pointer;
 }
 nav li a:hover {
-    background-color: #e6e6e6;
+    background-color: #f2f2f2;
 }
 nav li a.selectedTab {
-    background-color: lightskyblue;
+    background-color: #cccccc;
 }
 #logout {
     float: right;
 }
 #logout a:hover {
-    background-color: #ff3333;
+    background-color: #111111;
+    color: #eeeeee;
 }
