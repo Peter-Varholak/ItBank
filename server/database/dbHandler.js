@@ -23,7 +23,6 @@ module.exports.login = function (username, password, callback) {
             callback(errors.loginErrors.INVALID_USERNAME.errorCode); // username doesn't exist
         } else {
             var client = result[0];
-            console.log(client.archived);
             if(client.archived != 1) {
                 if(client.active < 3) {
                     if(client.password === password) {

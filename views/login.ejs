@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="/stylesheets/login.css">
     <link rel="stylesheet" type="text/css" href="/stylesheets/navbar.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="/javascripts/login.js"></script>
 </head>
 <body>
@@ -22,7 +23,7 @@
             <br>
             <label>
                 Password:<br>
-                <input id="password" name="password">
+                <input id="password" type="password" name="password">
             </label>
             <br><br>
             <button id="loginBtn">Login</button>

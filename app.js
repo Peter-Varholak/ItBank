@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var login = require('./routes/login');
+var loginEval = require('./routes/loginEval');
 
 var app = express();
 
@@ -21,20 +22,22 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-//app.use(express.session({secret: '1234567890QWERTY'}));
+var http = require('http');
+var server = http.createServer(app);
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+var io = require('socket.io').listen(server);
+server.listen(14601);
 
 app.use('/', login);
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
-app.use(bodyParser.json());
-app.use('/login', login);
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+io.sockets.on('connection', function(socket){
+  socket.on('login', function (data){
+    loginEval.loginFunc(app, socket,data);
+  });
 });
 
 
@@ -45,6 +48,14 @@ app.use(function(req, res, next) {
 
 
 
+
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
+});
 // error handlers
 
 // development error handler

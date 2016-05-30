@@ -1,7 +1,11 @@
 /**
  * Created by Iceblaze on 20. 5. 2016.
  */
+var socket;
+
 $(function() {
+    socket = io.connect();
+
     $("#loginBtn").click(function (event) {
         event.preventDefault();
         
@@ -11,9 +15,9 @@ $(function() {
         var username = $.trim($("#username").val());
         var password = $.trim($("#password").val());
         
-        var posting = $.post("/", { username: username, password: password });
+        socket.emit("login", { username: username, password: password });
         
-        posting.done(function( data ) {
+        socket.on('loginRes', function( data ) {
             var dataObj = JSON.parse(data);
 
             if(dataObj.type === 'loginSuccess') {
@@ -33,4 +37,3 @@ $(function() {
         });
     });
 });
-
