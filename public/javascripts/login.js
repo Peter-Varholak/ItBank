@@ -21,7 +21,7 @@ $(function() {
             var dataObj = JSON.parse(data);
 
             if(dataObj.type === 'loginSuccess') {
-                $("nav").append(dataObj.html.nav);
+                $("nav").html(dataObj.html.nav);
                 $("main").html(dataObj.html.main);
             } else if(dataObj.type === 'loginError') {
                 if(dataObj.errorCode == 1) {

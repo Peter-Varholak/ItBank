@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 
 var login = require('./routes/login');
 var loginEval = require('./routes/loginEval');
+var dataBuilder = require('./routes/dataBuilder');
+var db = require("./server/database/dbHandler");
 
 var app = express();
 
@@ -36,7 +38,16 @@ app.use('/', login);
 
 io.sockets.on('connection', function(socket){
   socket.on('login', function (data){
-    loginEval.loginFunc(app, socket,data);
+    loginEval.loginFunc(app,socket,data);
+  });
+  socket.on('dataRequest', function (data){
+    dataBuilder.buildData(app,socket,data);
+  });
+  socket.on('transactionDataRequest', function (data){
+    dataBuilder.transactionData(app,socket,data);
+  });
+  socket.on('transactionRequest', function (data){
+    db.makeTransactions(socket.clientID, data.accountId, data.recipientAccount, data.paymentAmount);
   });
 });
 

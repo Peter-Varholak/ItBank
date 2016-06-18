@@ -1,24 +1,83 @@
-<div id="homeContent" class="content">
+<div id="homeContent" class="content visibleContent">
     <p><h3>Welcome <%= fullName %></h3></p>
     <p>You have <b>0</b> new messages</p>
     <iframe src="http://www.nbs.sk/sk/statisticke-udaje/kurzovy-listok/denny-kurzovy-listok-ecb"></iframe>
 </div>
-<div id="accountsContent" class="content">
-    This is accountsContent
+<div id="accountsContent" class="content centered">
+    <div class="contentWrapper">
+        <table style="width:50%">
+
+        </table>
+    </div>
 </div>
 <div id="transactionsContent" class="content">
-    This is transactionsContent
+    <button class="newTransactionButton" >New Transaction</button>
+    <label>
+        Select account:
+        <select id="accountSelector">
+
+        </select>
+    </label>
+    <div class="contentWrapper">
+        <table style="width:30%">
+
+        </table>
+    </div>
 </div>
-<div id="loansContent" class="content">
-    This is loansContent
+<div id="loansContent" class="content centered">
+    <table style="width:50%">
+
+    </table>
 </div>
-<div id="cardsContent" class="content">
-    This is cardsContent
+<div id="cardsContent" class="content centered">
+    <table style="width:50%">
+
+    </table>
 </div>
-<div id="loadingScreen" class="visibleContent">
+<div id="paymentScreen" class="content centered">
+    <form id="payment">
+        <table>
+            <tr>
+                <td>
+                    <label for="paymentAccountSelect">
+                        Choose account:
+                    </label>
+                </td>
+                <td>
+                    <select id="paymentAccountSelect">
+
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="recipientAccount">
+                        Recipient account:
+                    </label>
+                </td>
+                <td>
+                    <input id="recipientAccount" type="number" name="recipientAccount" required/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="paymentAmount">
+                        Amount:
+                    </label>
+                </td>
+                <td>
+                    <input id="paymentAmount" type="number" min="1" name="paymentAmount" required/>
+                </td>
+            </tr>
+        </table>
+        <br><br>
+        <input type="submit" id="paymentBtn" value="Complete transaction"/>
+    </form>
+</div>
+<div id="messageScreen" class="content centered">
     <div>
         <img src="/images/hex-loader.gif">
-        <h1>Loading</h1>
+        <h1>Your request is being processed</h1>
     </div>
 </div>
 <script src="/javascripts/main.js"></script>

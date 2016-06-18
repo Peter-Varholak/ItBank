@@ -6,6 +6,10 @@ var dbConnect = require("./databaseConnector");
 var dbConst = require('./databaseConstants');
 var errors = require('../errorCodes.json');
 var clientData = require("./data_objects/clientData");
+var accountData = require("./data_objects/accountData");
+var loanData = require("./data_objects/loanData");
+var cardData = require("./data_objects/cardData");
+var transactionData = require("./data_objects/transactionData");
 
 module.exports.login = function (username, password, callback) {
     var _username = mysql.escape(username);
@@ -54,6 +58,148 @@ module.exports.login = function (username, password, callback) {
             }            
         }
     });
+};
+
+module.exports.getAccountsData = function (clientId, callback) {
+    var query = "SELECT * FROM " + dbConst.tableNames.ACCOUNTS +
+                " WHERE " + dbConst.tableColumns.accounts.CLIENT_ID + "=" + clientId;
+    dbConnect.query(query, function(result){
+        if(result != null) {
+            var data = [];
+            for(var i = 0; i < result.length; i++){
+                data[i] = accountData(result[i].accountID, result[i].balance);
+            }
+            callback(data);
+        }
+    });
+};
+
+module.exports.getTransactionsData = function (clientId, callback) {
+    var query = "SELECT * FROM " + dbConst.tableNames.ACCOUNTS +
+        " WHERE " + dbConst.tableColumns.accounts.CLIENT_ID + "=" + clientId;
+    dbConnect.query(query, function(result){
+        var data = [];
+        for(var i = 0; i < result.length; i++){
+            data[i] = accountData(result[i].accountID, result[i].balance);
+        }
+        callback(data);
+    });
+};
+
+module.exports.getLoansData = function (clientId, callback) {
+    var query = "SELECT * FROM " + dbConst.tableNames.LOANS +
+        " WHERE " + dbConst.tableColumns.loans.CLIENT_ID + "=" + clientId;
+    dbConnect.query(query, function(result){
+        if(result != null) {
+            var data = [];
+            for(var i = 0; i < result.length; i++){
+                data[i] = loanData(result[i].amount, result[i].paidAmount, result[i].interest);
+            }
+            callback(data);
+        }
+    });
+};
+
+module.exports.getCardsData = function (clientId, callback) {
+    var query = "SELECT * FROM " + dbConst.tableNames.CARDS +
+        " INNER JOIN " + dbConst.tableNames.ACCOUNTS +
+        " ON " + dbConst.tableNames.CARDS + "." + dbConst.tableColumns.cards.ACCOUNT_ID + 
+        "=" + dbConst.tableNames.ACCOUNTS + "." + dbConst.tableColumns.accounts.ACCOUNT_ID +
+        " WHERE " + dbConst.tableColumns.accounts.CLIENT_ID + "=" + clientId;
+    dbConnect.query(query, function(result){
+        if(result != null) {
+            var data = [];
+            for (var i = 0; i < result.length; i++) {
+                console.log(result);
+                data[i] = cardData(result[i].cardID, result[i].accountID, result[i].active);
+            }
+            callback(data);
+        }
+    });
+};
+
+module.exports.getTransactions = function (accountId, callback) {
+    var data = [];
+
+    var query = "SELECT * FROM " + dbConst.tableNames.BANK_TRANSACTIONS +
+        " WHERE " + dbConst.tableColumns.bankTransactions.ACCOUNT_ID + "=" + accountId;
+    dbConnect.query(query, function(result){
+        if(result != null) {
+            addData(result);
+        }
+        
+        query = "SELECT * FROM " + dbConst.tableNames.CLIENT_TRANSACTIONS +
+            " WHERE " + dbConst.tableColumns.clientTransactions.ACCOUNT_ID + "=" + accountId;
+        dbConnect.query(query, function(result){
+            if(result != null) {
+                addData(result);
+            }
+            callback(data);
+        });
+    });    
+    
+    function addData(result) {
+        for (var i = 0; i < result.length; i++) {
+            var date = new Date(result[i].transDate);
+            data[i] = transactionData(date.getDate() + "." + (parseInt(date.getMonth()) + parseInt(1)) + "." + date.getFullYear(), result[i].value);
+        }
+    }
+};
+
+module.exports.makeTransactions = function (clientId, accountId, recipientAccount, amount) {
+    if(accountId != recipientAccount) {
+
+        var query = "SELECT * FROM " + dbConst.tableNames.ACCOUNTS +
+            " WHERE " + dbConst.tableColumns.accounts.ACCOUNT_ID + "=" + accountId;
+        dbConnect.query(query, function(result) {
+            if (result != null && result[0].balance >= amount) {
+                query = "SELECT * FROM " + dbConst.tableNames.ACCOUNTS +
+                    " WHERE " + dbConst.tableColumns.accounts.ACCOUNT_ID + "=" + recipientAccount;
+                dbConnect.query(query, function (result) {
+                    if (result != null && result.length > 0) {
+                        var now = new Date();
+                        var hourDelay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0) - now;
+                        while (hourDelay < 0) {
+                            hourDelay += 3600000; // add hour
+                        }
+                        setTimeout(function(){
+                            //removing money from user account
+                            query = "INSERT INTO " + dbConst.tableNames.CLIENT_TRANSACTIONS +
+                                " (" + dbConst.tableColumns.clientTransactions.CLIENT_ID +
+                                ", " + dbConst.tableColumns.clientTransactions.ACCOUNT_ID +
+                                ", " + dbConst.tableColumns.clientTransactions.TRANSACTION_DATE +
+                                ", " + dbConst.tableColumns.clientTransactions.VALUE +
+                                ") VALUES ('" + clientId + "', '" + accountId + "', CURRENT_DATE(), '" + (amount * -1) + "')";
+                            dbConnect.query(query, function (result) {
+                            });
+
+                            query = "UPDATE " + dbConst.tableNames.ACCOUNTS +
+                                " SET " + dbConst.tableColumns.accounts.BALANCE + " = " + dbConst.tableColumns.accounts.BALANCE +
+                                " - " + amount + " WHERE " + dbConst.tableColumns.accounts.ACCOUNT_ID + " = " + accountId;
+                            dbConnect.query(query, function (result) {
+                            });
+
+                            //adding money to recipient account
+                            query = "INSERT INTO " + dbConst.tableNames.CLIENT_TRANSACTIONS +
+                                " (" + dbConst.tableColumns.clientTransactions.CLIENT_ID +
+                                ", " + dbConst.tableColumns.clientTransactions.ACCOUNT_ID +
+                                ", " + dbConst.tableColumns.clientTransactions.TRANSACTION_DATE +
+                                ", " + dbConst.tableColumns.clientTransactions.VALUE +
+                                ") VALUES ('" + clientId + "', '" + recipientAccount + "', CURRENT_DATE(), '" + amount + "')";
+                            dbConnect.query(query, function (result) {
+                            });
+
+                            query = "UPDATE " + dbConst.tableNames.ACCOUNTS +
+                                " SET " + dbConst.tableColumns.accounts.BALANCE + " = " + dbConst.tableColumns.accounts.BALANCE +
+                                " + " + amount + " WHERE " + dbConst.tableColumns.accounts.ACCOUNT_ID + " = " + recipientAccount;
+                            dbConnect.query(query, function (result) {
+                            });
+                        }, hourDelay);
+                    }
+                });
+            }
+        });
+    }
 };
 
 function updateLoginRecord(username, valid) {

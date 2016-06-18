@@ -22,12 +22,14 @@ module.exports.loginFunc = function(app, socket, data){
             app.render('main', {fullName: result.getFullName()}, function (err, html) {
                 response.html.main = html;
             });
+            socket.clientID = result.clientID;
         } else {
             response = {
                 type: "loginError",
                 errorCode: result
             };
         }
+        //socket.broadcast.to(socket.id).emit('loginRes', JSON.stringify(response));
         socket.emit('loginRes', JSON.stringify(response));
     });
 };
